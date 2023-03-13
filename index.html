@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Clip Updater</title>
+    <!--Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poiret+One|Raleway:400,300,600,700">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <!-- Styles and script-->
+    <link rel="stylesheet" href="main.css">
+    <script src="script.js"></script>
+</head>
+<body>
+    <h1>Fix AudioClip.play!</h1>
+    <p class="desc">
+    Will fix all <code>AudioClip.play("text", ...)</code> and convert to the new  <code>AudioClip.play(self.getResource().getContent("text"), ...)</code> format. If you have code of the form <code>AudioClip.play("local::resourceId.contentId", ...)</code> then it won't be fixed! Can either drag the folder onto the button or click it to choose the project folder.
+    <br><br><i>After selecting, this modifies your project directory!! Be sure to back it up first!</i>
+    </p>
+    <button id="start_process">Put Fraytools Folder Here</button>
+    <p class="desc" id="result"></p>
+</body>
+</html>
