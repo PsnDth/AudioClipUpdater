@@ -168,6 +168,11 @@ button:hover {
 	color: black;
 }
 
+button:disabled {
+	border-color: #717171;
+	color: #717171;
+}
+
 /** Result Formatting **/
 
 #result.desc {

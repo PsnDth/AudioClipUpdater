@@ -36,42 +36,33 @@ async function applyForFolder(dirHandle, func) {
 window.addEventListener("load", (e) => {
     const result_box = document.getElementById("result");
     const start_button = document.getElementById("start_process");
-    start_button.addEventListener("click", async (event) => {
-        window.showDirectoryPicker({ id: "ft_folder", mode: "readwrite" }).then(async (dirHandle) => {
-            for await (const entry of dirHandle.values()) {
-                if (entry.name.endswith(".fraytools")) return dirHandle;
-            }
-            throw "Couldn't find .fraytools file";
-        }).then(async (dirHandle) =>{
-            var matches = await applyForFolder(dirHandle, updateAudioClip);
-            return matches;
-        }).then((num_matches) => {
-            // const sucess_message_start = document.createTextNode("")
-            // const matches_span = document.createElement("span");
-            // matches_span.textContent = `${num_matches}`;
-            result_box.innerHTML = `Successfully applied to folder. Found <span>${num_matches}</span> matches.`;
-            result_box.classList = "desc success_resp";
-            console.log("Successfully applied to folder");
-        }).catch( (err) => {
-            // if (!(err instanceof AbortError)) {
-                result_box.textContent = "Couldn't open provided folder, or folder does not have a .fraytools file. Please try again.";
-                result_box.classList = "desc error_resp";
-                console.error(`Failed to apply to folder. Reason: ${err}`);
-            // }
+    const can_modify_fs = ("showDirectoryPicker"  in window);
+    if (can_modify_fs) {
+        start_button.addEventListener("click", async (event) => {
+            window.showDirectoryPicker({ id: "ft_folder", mode: "readwrite" }).then(async (dirHandle) => {
+                for await (const entry of dirHandle.values()) {
+                    if (entry.name.endswith(".fraytools")) return dirHandle;
+                }
+                throw "Couldn't find .fraytools file";
+            }).then(async (dirHandle) =>{
+                var matches = await applyForFolder(dirHandle, updateAudioClip);
+                return matches;
+            }).then((num_matches) => {
+                result_box.innerHTML = `Successfully applied to folder. Found <span>${num_matches}</span> matches.`;
+                result_box.classList = "desc success_resp";
+                console.log("Successfully applied to folder");
+            }).catch( (err) => {
+                if (!(err instanceof AbortError)) {
+                    result_box.textContent = "Couldn't open provided folder, or folder does not have a .fraytools file. Please try again.";
+                    result_box.classList = "desc error_resp";
+                    console.error(`Failed to apply to folder. Reason: ${err}`);
+                }
+            });
         });
-
-        //TODO: Check if there's a fraytools file otherwise bail
-    });
-
-
-    // This stuff is readonly
-    // const folder_input = document.getElementById("frayfolder");
-    // folder_input.addEventListener("change", (event) => {
-    //     let output = document.getElementById("listing");
-    //     for (const file of event.target.files) {
-    //         let item = document.createElement("li");
-    //         item.textContent = file.webkitRelativePath;
-    //         output.appendChild(item);
-    //     }
-    // }, false);
+    } else {
+        start_button.disabled = true;
+        result_box.textContent = "Can't access the filesystem directly with this browser 😢. Try using something chromium ...";
+        result_box.classList = "desc error_resp";
+        console.error(`showDirectoryPicker is not supported in this browser`);
+    }
 });
